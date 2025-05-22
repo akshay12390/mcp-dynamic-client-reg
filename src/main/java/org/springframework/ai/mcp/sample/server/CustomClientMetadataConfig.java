@@ -64,10 +64,17 @@ public class CustomClientMetadataConfig {
 					}
 				});
 			}
-
-			return RegisteredClient.from(registeredClient)
-					.clientSettings(clientSettingsBuilder.build())
-					.build();
+    		
+			// Only allow specific scopes
+			List<String> allowedScopes = List.of("weather.read");
+			RegisteredClient.Builder builder = RegisteredClient.from(registeredClient)
+			.clientSettings(clientSettingsBuilder.build())
+			.scopes(scopes -> {
+				scopes.clear();
+				scopes.addAll(allowedScopes);
+			});
+	
+			return builder.build();
 		}
 	}
 
@@ -92,9 +99,11 @@ public class CustomClientMetadataConfig {
 						.filter(metadata -> clientSettings.getSetting(metadata) != null)
 						.collect(Collectors.toMap(Function.identity(), clientSettings::getSetting)));
 			}
+			
 
 			return OidcClientRegistration.withClaims(claims).build();
 		}
+		
 
 	}
 

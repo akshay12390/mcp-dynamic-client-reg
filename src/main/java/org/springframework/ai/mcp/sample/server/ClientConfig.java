@@ -22,6 +22,7 @@ public class ClientConfig {
 				.authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)	
 				.scope("client.create")	
 				.scope("client.read")	
+				.scope("weather.read")	
 				.build();
 
 		return new InMemoryRegisteredClientRepository(registrarClient);

@@ -33,7 +33,10 @@ class SecurityConfiguration {
 	@Bean
 	@Order(2)
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		return http.authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+		return http
+			.authorizeHttpRequests(auth -> auth
+				.requestMatchers("/mcp/**", "/sse/**").hasAuthority("SCOPE_weather.read")
+				.anyRequest().authenticated())
 			.with(authorizationServer(), Customizer.withDefaults())
 			.oauth2ResourceServer(resource -> resource.jwt(Customizer.withDefaults()))
 			.csrf(CsrfConfigurer::disable)
