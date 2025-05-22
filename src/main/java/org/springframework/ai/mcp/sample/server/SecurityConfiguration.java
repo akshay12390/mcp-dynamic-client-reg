@@ -25,22 +25,28 @@ import org.springframework.security.config.annotation.web.configurers.CsrfConfig
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import static org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer.authorizationServer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 @Configuration
 @EnableWebSecurity
 class SecurityConfiguration {
-
 	@Bean
 	@Order(2)
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		return http
 			.authorizeHttpRequests(auth -> auth
+				.requestMatchers("/custom-well-known/oauth-authorization-server").permitAll()
 				.requestMatchers("/mcp/**", "/sse/**").hasAuthority("SCOPE_weather.read")
 				.anyRequest().authenticated())
 			.with(authorizationServer(), Customizer.withDefaults())
 			.oauth2ResourceServer(resource -> resource.jwt(Customizer.withDefaults()))
 			.csrf(CsrfConfigurer::disable)
 			.cors(Customizer.withDefaults())
+			.formLogin(Customizer.withDefaults()) 
 			.build();
 	}
 
@@ -64,9 +70,24 @@ class SecurityConfiguration {
 			.authorizeHttpRequests((authorize) ->
 				authorize
 					.anyRequest().authenticated()
-			);
+			)
+			.formLogin(Customizer.withDefaults()) ;
 
 		return http.build();
 	}
 
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+
+	@Bean
+	public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
+		return new InMemoryUserDetailsManager(
+			User.withUsername("user")
+				.password(passwordEncoder.encode("password"))
+				.authorities("SCOPE_weather.read")
+				.build()
+		);
+	}
 }
