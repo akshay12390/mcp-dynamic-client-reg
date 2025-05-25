@@ -18,11 +18,9 @@ public class CustomAuthMetdataController {
         metadata.put("issuer", issuer);
         metadata.put("authorization_endpoint", issuer + "/oauth2/authorize");
         metadata.put("token_endpoint", issuer + "/oauth2/token");
-        metadata.put("jwks_uri", issuer + "/oauth2/jwks");
         metadata.put("registration_endpoint", issuer + "/connect/register");
-        metadata.put("scopes", Arrays.asList("client.create", "client.read", "weather.read"));
-        // Add any other fields you want to expose
-
+        metadata.put("scopes_supported", Arrays.asList("client.create", "client.read", "weather.read"));
+        metadata.put("grant_types_supported", Arrays.asList("authorization_code", "client_credentials", "refresh_token"));
         return metadata;
     }
 }
