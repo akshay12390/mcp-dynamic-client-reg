@@ -1,0 +1,1 @@
+web: java -Dspring.security.oauth2.authorizationserver.issuer-uri=https://mcp-dynamic-client-reg-7b8936f26a28.herokuapp.com $JAVA_OPTS -jar target/*.jar 

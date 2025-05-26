@@ -32,6 +32,7 @@ public class ClientConfig {
 				.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
 				.authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
 				.redirectUri("http://localhost:8080/redirect")
+				.redirectUri("https://localhost:7443/services/extidp/callback")
 				.scope("client.create")	
 				.scope("client.read")	
 				.scope("weather.read")	
